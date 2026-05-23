@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Thanatos Tattoo Studio — Explora los portafolios de todos nuestros artistas en un solo lugar. Encuentra el estilo perfecto para tu próximo tatuaje." />
+  <title>Thanatos Tattoo Studio</title>
+  <style>
+    /* ── Reset & tokens ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0a;
+      --surface:   #111111;
+      --border:    #1e1e1e;
+      --accent:    #c8a96e;
+      --accent-dim:#a07840;
+      --text:      #f0ece4;
+      --muted:     #7a7570;
+      --radius:    6px;
+      --max:       1080px;
+      --sans:      'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Typography ── */
+    h1, h2, h3 {
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    h1 { font-size: clamp(2.4rem, 7vw, 4.5rem); }
+    h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); }
+    h3 { font-size: 1.15rem; }
+
+    p { color: var(--muted); }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Layout helpers ── */
+    .container {
+      width: 100%;
+      max-width: var(--max);
+      margin-inline: auto;
+      padding-inline: 1.25rem;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.1rem 0;
+      transition: background .3s, backdrop-filter .3s;
+    }
+    nav.scrolled {
+      background: rgba(10,10,10,.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .logo span { color: var(--accent); }
+    .nav-cta {
+      background: var(--accent);
+      color: #0a0a0a;
+      padding: .45rem 1.1rem;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: .85rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      transition: background .2s;
+    }
+    .nav-cta:hover { background: var(--accent-dim); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding-bottom: 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 60% 40%, rgba(200,169,110,.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 80% at 20% 80%, rgba(200,169,110,.05) 0%, transparent 60%);
+    }
+    /* Decorative grid lines */
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+    }
+    .hero-content { position: relative; padding-top: 7rem; }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 28px; height: 1px;
+      background: var(--accent);
+    }
+    .hero-title { margin-bottom: 1.5rem; }
+    .hero-title em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero-sub {
+      font-size: 1.05rem;
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0a;
+      padding: .9rem 2rem;
+      border-radius: var(--radius);
+      font-weight: 800;
+      font-size: .92rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .btn-primary:hover { background: var(--accent-dim); transform: translateY(-1px); }
+    .btn-ghost {
+      color: var(--muted);
+      font-size: .9rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      transition: color .2s;
+    }
+    .btn-ghost:hover { color: var(--text); }
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .stat-num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text);
+      display: block;
+    }
+    .stat-label {
+      font-size: .78rem;
+      color: var(--muted);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    /* ── SCROLL INDICATOR ── */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem;
+      color: var(--muted);
+      font-size: .7rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      writing-mode: vertical-lr;
+    }
+    .scroll-indicator::after {
+      content: '';
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: scrollLine 1.6s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%   { transform: scaleY(0); transform-origin: top; }
+      50%  { transform: scaleY(1); transform-origin: top; }
+      51%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ── SECTION base ── */
+    section { padding: 6rem 0; }
+
+    /* ── BENEFITS ── */
+    #benefits { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .section-header { text-align: center; margin-bottom: 4rem; }
+    .section-tag {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: .75rem;
+    }
+    .section-header h2 { margin-bottom: .75rem; }
+    .section-header p { max-width: 500px; margin-inline: auto; }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+    @media (min-width: 640px) {
+      .benefits-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .benefit-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2rem 1.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .25s, transform .25s;
+    }
+    .benefit-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .benefit-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity .25s;
+    }
+    .benefit-card:hover::before { opacity: 1; }
+
+    .benefit-icon {
+      width: 44px; height: 44px;
+      background: rgba(200,169,110,.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .benefit-icon svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .benefit-card h3 { margin-bottom: .6rem; color: var(--text); }
+    .benefit-card p { font-size: .93rem; }
+
+    /* ── PORTFOLIO PREVIEW ── */
+    #preview { }
+    .preview-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    @media (min-width: 768px) {
+      .preview-layout { grid-template-columns: 1fr 1fr; gap: 4rem; }
+    }
+    .preview-text .section-tag { display: block; margin-bottom: .75rem; }
+    .preview-text h2 { margin-bottom: 1rem; }
+    .preview-text p { margin-bottom: 1.5rem; }
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: .7rem; }
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: .93rem;
+      color: var(--muted);
+    }
+    .feature-list li::before {
+      content: '';
+      width: 18px; height: 18px;
+      background: rgba(200,169,110,.12);
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23c8a96e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='3 8 6.5 11.5 13 5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 12px;
+    }
+
+    /* Fake portfolio mosaic */
+    .portfolio-mosaic {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 90px);
+      gap: 6px;
+    }
+    @media (min-width: 640px) {
+      .portfolio-mosaic { grid-template-rows: repeat(3, 120px); }
+    }
+    .mosaic-cell {
+      border-radius: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+    }
+    .mosaic-cell.tall { grid-row: span 2; }
+    .mosaic-cell.wide { grid-column: span 2; }
+
+    /* Tattoo style color palettes for the mock cells */
+    .mosaic-cell:nth-child(1) { background: linear-gradient(135deg,#1a1208 0%,#2e1f0e 100%); }
+    .mosaic-cell:nth-child(2) { background: linear-gradient(135deg,#0e0e18 0%,#1a1a2e 100%); }
+    .mosaic-cell:nth-child(3) { background: linear-gradient(135deg,#120808 0%,#2e1212 100%); }
+    .mosaic-cell:nth-child(4) { background: linear-gradient(135deg,#0a120a 0%,#0e2010 100%); }
+    .mosaic-cell:nth-child(5) { background: linear-gradient(135deg,#18100a 0%,#2e1e10 100%); }
+    .mosaic-cell:nth-child(6) { background: linear-gradient(135deg,#100818 0%,#200e2e 100%); }
+    .mosaic-cell:nth-child(7) { background: linear-gradient(135deg,#181008 0%,#2e2010 100%); }
+
+    .mosaic-label {
+      position: absolute;
+      bottom: 6px; left: 8px;
+      font-size: .65rem;
+      color: rgba(255,255,255,.35);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .mosaic-artist-dot {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: .7;
+    }
+
+    /* ── HOW IT WORKS (benefit 3) ── */
+    #how {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-top: 3.5rem;
+      position: relative;
+    }
+    @media (min-width: 640px) {
+      .steps-grid { grid-template-columns: repeat(3, 1fr); }
+      .steps-grid::before {
+        content: '';
+        position: absolute;
+        top: 28px;
+        left: calc(16.6% + 28px);
+        right: calc(16.6% + 28px);
+        height: 1px;
+        background: linear-gradient(90deg, var(--accent), transparent 50%, var(--accent));
+        opacity: .3;
+      }
+    }
+    .step { text-align: center; }
+    .step-num {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .step h3 { margin-bottom: .5rem; }
+    .step p { font-size: .9rem; }
+
+    /* ── EMAIL CAPTURE ── */
+    #capture {
+      text-align: center;
+    }
+    .capture-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 3.5rem 2rem;
+      max-width: 560px;
+      margin-inline: auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .capture-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200,169,110,.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .capture-box h2 { margin-bottom: .75rem; }
+    .capture-box > p { margin-bottom: 2rem; font-size: .95rem; }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+    @media (min-width: 480px) {
+      .form-row { flex-direction: row; }
+    }
+
+    .email-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      padding: .85rem 1.1rem;
+      font-size: .95rem;
+      font-family: var(--sans);
+      outline: none;
+      transition: border-color .2s;
+    }
+    .email-input::placeholder { color: var(--muted); }
+    .email-input:focus { border-color: var(--accent); }
+
+    .btn-submit {
+      background: var(--accent);
+      color: #0a0a0a;
+      border: none;
+      border-radius: var(--radius);
+      padding: .85rem 1.6rem;
+      font-size: .92rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .2s;
+      font-family: var(--sans);
+    }
+    .btn-submit:hover { background: var(--accent-dim); }
+    .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+
+    .form-note {
+      margin-top: .9rem;
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    /* Success state */
+    .success-msg {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: .6rem;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 1rem;
+    }
+    .success-msg.show { display: flex; }
+    .success-icon {
+      width: 28px; height: 28px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 0;
+    }
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      text-align: center;
+    }
+    @media (min-width: 640px) {
+      .footer-inner { flex-direction: row; justify-content: space-between; text-align: left; }
+    }
+    .footer-copy { font-size: .82rem; color: var(--muted); }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a {
+      font-size: .82rem;
+      color: var(--muted);
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+
+    /* ── Reveal animations ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .55s ease, transform .55s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .2s; }
+    .reveal-delay-3 { transition-delay: .3s; }
+
+    /* ── Utility ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="container nav-inner">
+      <span class="logo">Thanatos<span>.</span></span>
+      <a href="#capture" class="nav-cta">Únete ahora</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="container hero-content">
+      <p class="hero-eyebrow">Tattoo Studio — Ciudad de México</p>
+      <h1 class="hero-title">
+        Un studio.<br>
+        Todos los<br>
+        <em>estilos.</em>
+      </h1>
+      <p class="hero-sub">
+        Explora el portafolio completo de nuestros artistas en un solo lugar.
+        Encuentra el estilo que habla por ti y agenda con quien lo hace mejor.
+      </p>
+      <div class="hero-actions">
+        <a href="#capture" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Ver portafolios
+        </a>
+        <a href="#how" class="btn-ghost">
+          ¿Cómo funciona?
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <span class="stat-num">8+</span>
+          <span class="stat-label">Artistas</span>
+        </div>
+        <div>
+          <span class="stat-num">500+</span>
+          <span class="stat-label">Piezas</span>
+        </div>
+        <div>
+          <span class="stat-num">12</span>
+          <span class="stat-label">Estilos</span>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator">Scroll</div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section id="benefits">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Por qué Thanatos</span>
+        <h2>Todo en un solo lugar</h2>
+        <p>Sin saltar entre perfiles de Instagram ni buscar en 10 páginas distintas.</p>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card reveal reveal-delay-1">
+          <div class="benefit-icon">
+            <!-- Grid icon -->
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div>
+          <h3>Portafolios centralizados</h3>
+          <p>Todos los artistas del studio en una galería unificada y filtrable por estilo, tamaño y zona del cuerpo.</p>
+        </div>
+        <div class="benefit-card reveal reveal-delay-2">
+          <div class="benefit-icon">
+            <!-- Search icon -->
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+          </div>
+          <h3>Encuentra tu estilo</h3>
+          <p>Blackwork, realismo, old school, watercolor, japonés y más. Filtra y descubre quién domina cada técnica.</p>
+        </div>
+        <div class="benefit-card reveal reveal-delay-3">
+          <div class="benefit-icon">
+            <!-- Calendar icon -->
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          </div>
+          <h3>Agenda directo</h3>
+          <p>Elige al artista que quieres, ve su disponibilidad y solicita tu cita sin intermediarios ni mensajes de voz.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO PREVIEW -->
+  <section id="preview">
+    <div class="container">
+      <div class="preview-layout">
+        <div class="preview-text reveal">
+          <span class="section-tag">Portafolio colectivo</span>
+          <h2>El trabajo habla por sí solo</h2>
+          <p>Cada pieza en nuestra galería tiene nombre de artista, estilo y tiempo de sesión estimado. Toma decisiones informadas antes de sentarte en la silla.</p>
+          <ul class="feature-list">
+            <li>Fotos en alta resolución con zoom</li>
+            <li>Tiempo de curación y cicatrización</li>
+            <li>Precio estimado por pieza</li>
+            <li>Reseñas verificadas de clientes</li>
+            <li>Disponibilidad en tiempo real</li>
+          </ul>
+        </div>
+        <div class="portfolio-mosaic reveal reveal-delay-1">
+          <!-- Row 1 -->
+          <div class="mosaic-cell tall">
+            <span class="mosaic-artist-dot"></span>
+            <span class="mosaic-label">Blackwork</span>
+          </div>
+          <div class="mosaic-cell">
+            <span class="mosaic-label">Realismo</span>
+          </div>
+          <div class="mosaic-cell">
+            <span class="mosaic-artist-dot"></span>
+            <span class="mosaic-label">Fine line</span>
+          </div>
+          <!-- Row 2 -->
+          <div class="mosaic-cell wide">
+            <span class="mosaic-label">Old School</span>
+          </div>
+          <!-- Row 3 -->
+          <div class="mosaic-cell">
+            <span class="mosaic-artist-dot"></span>
+            <span class="mosaic-label">Japonés</span>
+          </div>
+          <div class="mosaic-cell">
+            <span class="mosaic-label">Geométrico</span>
+          </div>
+          <div class="mosaic-cell">
+            <span class="mosaic-label">Watercolor</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">El proceso</span>
+        <h2>De la idea al tatuaje</h2>
+        <p>Tres pasos simples para que el único trabajo sea elegir tu pieza favorita.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step reveal reveal-delay-1">
+          <div class="step-num">01</div>
+          <h3>Explora la galería</h3>
+          <p>Navega el portafolio colectivo, filtra por estilo y guarda las piezas que te inspiran.</p>
+        </div>
+        <div class="step reveal reveal-delay-2">
+          <div class="step-num">02</div>
+          <h3>Elige tu artista</h3>
+          <p>Ve el trabajo completo de cada artista y decide quién tiene la mano perfecta para tu diseño.</p>
+        </div>
+        <div class="step reveal reveal-delay-3">
+          <div class="step-num">03</div>
+          <h3>Agenda tu sesión</h3>
+          <p>Solicita tu cita con fecha, referencia y presupuesto. Confirmación en menos de 24 h.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMAIL CAPTURE -->
+  <section id="capture">
+    <div class="container">
+      <div class="capture-box reveal">
+        <span class="section-tag">Acceso anticipado</span>
+        <h2>Sé el primero en entrar</h2>
+        <p>Estamos afinando los últimos detalles. Déjanos tu correo y te avisamos en cuanto abramos la galería completa.</p>
+
+        <form id="emailForm" novalidate>
+          <div class="form-row">
+            <input
+              type="email"
+              id="emailInput"
+              class="email-input"
+              placeholder="tu@correo.com"
+              autocomplete="email"
+              required
+            />
+            <button type="submit" class="btn-submit" id="submitBtn">Avisarme</button>
+          </div>
+          <p class="form-note" id="formNote">Sin spam. Solo te escribimos cuando esté listo.</p>
+        </form>
+
+        <div class="success-msg" id="successMsg" role="status">
+          <span class="success-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          ¡Listo! Te avisamos cuando abramos.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-inner">
+      <p class="footer-copy">© 2026 Thanatos Tattoo Studio. Todos los derechos reservados.</p>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="#">Privacidad</a>
+        <a href="#">Términos</a>
+        <a href="#">Contacto</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // ── Nav scroll state ──
+    const nav = document.getElementById('nav');
+    const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // ── Intersection Observer for reveal ──
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }),
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ── Email form ──
+    const form       = document.getElementById('emailForm');
+    const input      = document.getElementById('emailInput');
+    const btn        = document.getElementById('submitBtn');
+    const successMsg = document.getElementById('successMsg');
+    const formNote   = document.getElementById('formNote');
+
+    const isValidEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const email = input.value;
+
+      if (!isValidEmail(email)) {
+        input.style.borderColor = '#c86e6e';
+        input.focus();
+        formNote.textContent = 'Por favor ingresa un correo válido.';
+        formNote.style.color = '#c86e6e';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Enviando…';
+
+      // Simulate async submission
+      setTimeout(() => {
+        form.style.display = 'none';
+        formNote.style.display = 'none';
+        successMsg.classList.add('show');
+
+        // In production: replace the setTimeout above with a real fetch()
+        // fetch('/api/subscribe', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email }) })
+      }, 900);
+    });
+
+    // Reset border color on input
+    input.addEventListener('input', () => {
+      input.style.borderColor = '';
+      formNote.textContent = 'Sin spam. Solo te escribimos cuando esté listo.';
+      formNote.style.color = '';
+    });
+
+    // ── Smooth anchor scroll (native fallback already in CSS) ──
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+  </script>
+</body>
+</html>
